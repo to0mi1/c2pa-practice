@@ -1,0 +1,11 @@
+server:
+  port: 8080
+spring:
+  application.name: backend
+  servlet:
+    multipart:
+      max-file-size: 50MB
+      max-request-size: 100MB
+c2pa:
+  core-server:
+    url: http://localhost:5000

@@ -75,6 +75,7 @@ C2PA (Coalition for Content Provenance and Authenticity) は、デジタルコ�
 
 - **公式サイト**: [c2pa.org](https://c2pa.org/)
 - **仕様書**: [C2PA Specifications](https://c2pa.org/specifications/)
+- **詳細技術資料**: [C2PA 仕様詳説 (日本語)](./C2PA_SPEC.md)
 - **Python SDK**: [c2pa-python (GitHub)](https://github.com/contentauth/c2pa-python)
 
 ### 1. マニフェストの構造

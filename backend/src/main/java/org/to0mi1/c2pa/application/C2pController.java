@@ -1,6 +1,8 @@
 package org.to0mi1.c2pa.application;
 
+import jakarta.validation.constraints.Pattern;
 import org.springframework.http.MediaType;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -15,6 +17,7 @@ import java.io.IOException;
 
 @RestController
 @RequestMapping(path = "/api/c2pa")
+@Validated
 public class C2pController {
 
     private final C2paApiAdapter c2paApiAdapter;
@@ -33,11 +36,23 @@ public class C2pController {
      * @return 署名済み画像のバイト配列
      * @throws IOException ファイル読み込みエラー
      */
-    @PostMapping(value = "/sign", produces = MediaType.IMAGE_JPEG_VALUE)
+    @PostMapping(value = "/sign")
     public byte[] sign(
             @RequestParam("title") String title,
-            @RequestParam("image") MultipartFile image) throws IOException {
-        return c2paApiAdapter.sign(title, image.getBytes(), image.getOriginalFilename());
+            @RequestParam("image") MultipartFile image,
+            @RequestParam(value = "ai_inference", required = false) @Pattern(regexp = "allowed|notAllowed|constrained") String aiInference,
+            @RequestParam(value = "ai_inference_constraints_info", required = false) String aiInferenceConstraintsInfo,
+            @RequestParam(value = "ai_generative_training", required = false) @Pattern(regexp = "allowed|notAllowed|constrained") String aiGenerativeTraining,
+            @RequestParam(value = "ai_generative_training_constraints_info", required = false) String aiGenerativeTrainingConstraintsInfo) throws IOException {
+        return c2paApiAdapter.sign(
+                title,
+                image.getBytes(),
+                image.getOriginalFilename(),
+                aiInference,
+                aiInferenceConstraintsInfo,
+                aiGenerativeTraining,
+                aiGenerativeTrainingConstraintsInfo
+        );
     }
 
     /**

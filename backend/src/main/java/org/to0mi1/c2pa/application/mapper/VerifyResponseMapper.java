@@ -24,6 +24,7 @@ import java.util.List;
 public class VerifyResponseMapper {
 
     private static final String ACTIONS_LABEL = "c2pa.actions.v2";
+    private static final String TRAINING_MINING_LABEL = "cawg.training-mining";
 
     /**
      * {@link C2paManifest}を{@link VerifyResponse}に変換します。
@@ -66,6 +67,51 @@ public class VerifyResponseMapper {
 
         List<VerifyResponse.ActionInfo> actions = extractActions(manifest);
         response.setActions(actions);
+
+        VerifyResponse.TrainingMiningInfo trainingMining = extractTrainingMining(manifest);
+        response.setTrainingMining(trainingMining);
+    }
+
+    /**
+     * マニフェストからAI学習・マイニング制限情報を抽出します。
+     *
+     * @param manifest マニフェスト
+     * @return AI学習・マイニング制限情報
+     */
+    private VerifyResponse.TrainingMiningInfo extractTrainingMining(Manifest manifest) {
+        if (manifest.getAssertions() == null) {
+            return null;
+        }
+
+        for (Assertion assertion : manifest.getAssertions()) {
+            if (TRAINING_MINING_LABEL.equals(assertion.getLabel()) && assertion.getData() != null) {
+                if (assertion.getData().getEntries() != null) {
+                    VerifyResponse.TrainingMiningInfo info = new VerifyResponse.TrainingMiningInfo();
+                    
+                    org.to0mi1.c2pa.core.model.TrainingMiningEntry inferenceEntry = 
+                            assertion.getData().getEntries().get("c2pa.ai_inference");
+                    if (inferenceEntry != null) {
+                        VerifyResponse.TrainingMiningEntry entry = new VerifyResponse.TrainingMiningEntry();
+                        entry.setUse(inferenceEntry.getUse());
+                        entry.setConstraintsInfo(inferenceEntry.getConstraintsInfo());
+                        info.setAiInference(entry);
+                    }
+
+                    org.to0mi1.c2pa.core.model.TrainingMiningEntry trainingEntry = 
+                            assertion.getData().getEntries().get("c2pa.ai_generative_training");
+                    if (trainingEntry != null) {
+                        VerifyResponse.TrainingMiningEntry entry = new VerifyResponse.TrainingMiningEntry();
+                        entry.setUse(trainingEntry.getUse());
+                        entry.setConstraintsInfo(trainingEntry.getConstraintsInfo());
+                        info.setAiGenerativeTraining(entry);
+                    }
+                    
+                    return info;
+                }
+            }
+        }
+
+        return null;
     }
 
     /**
@@ -139,6 +185,9 @@ public class VerifyResponseMapper {
 
         List<VerifyResponse.ActionInfo> actions = extractActions(manifest);
         historyItem.setActions(actions);
+
+        VerifyResponse.TrainingMiningInfo trainingMining = extractTrainingMining(manifest);
+        historyItem.setTrainingMining(trainingMining);
 
         return historyItem;
     }

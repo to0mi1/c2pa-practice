@@ -58,6 +58,43 @@ public class VerifyResponse {
      * 最新の署名が先頭に、最も古い署名が末尾になります。
      */
     private List<ManifestHistory> history;
+    
+    /**
+     * AI学習・マイニング制限情報。
+     */
+    private TrainingMiningInfo trainingMining;
+
+    /**
+     * AI学習・マイニング制限情報。
+     */
+    @Data
+    public static class TrainingMiningInfo {
+        /**
+         * AI推論（c2pa.ai_inference）の制限。
+         */
+        private TrainingMiningEntry aiInference;
+
+        /**
+         * AI生成学習（c2pa.ai_generative_training）の制限。
+         */
+        private TrainingMiningEntry aiGenerativeTraining;
+    }
+
+    /**
+     * AI学習・マイニング制限のエントリ。
+     */
+    @Data
+    public static class TrainingMiningEntry {
+        /**
+         * 利用制限の状態（allowed, notAllowed, constrained）。
+         */
+        private String use;
+
+        /**
+         * 制限の詳細情報。
+         */
+        private String constraintsInfo;
+    }
 
     /**
      * アクション情報。
@@ -122,6 +159,11 @@ public class VerifyResponse {
          * 実行されたアクションのリスト。
          */
         private List<ActionInfo> actions;
+
+        /**
+         * AI学習・マイニング制限情報。
+         */
+        private TrainingMiningInfo trainingMining;
 
         /**
          * クレーム生成ツールの情報。

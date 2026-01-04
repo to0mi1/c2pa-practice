@@ -5,15 +5,18 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * アサーションデータ。
  * <p>
  * アサーションの実際の内容を保持するクラスです。
- * このクラスは、特にアクション履歴アサーション（{@code "c2pa.actions.v2"}）のデータ構造を表現します。
+ * このクラスは、特にアクション履歴アサーション（{@code "c2pa.actions.v2"}）や
+ * AI学習制限アサーション（{@code "cawg.training-mining"}）のデータ構造を表現します。
  * アサーションの種類によって、含まれるフィールドは異なる場合があります。
  *
  * @see Action
+ * @see TrainingMiningEntry
  * @see Assertion
  */
 @Data
@@ -29,4 +32,13 @@ public class AssertionData {
      */
     @JsonProperty("actions")
     private List<Action> actions;
+
+    /**
+     * エントリのマップ。
+     * <p>
+     * {@code "cawg.training-mining"} アサーションなどで使用され、
+     * 項目名をキー、その詳細設定を値として保持します。
+     */
+    @JsonProperty("entries")
+    private Map<String, TrainingMiningEntry> entries;
 }

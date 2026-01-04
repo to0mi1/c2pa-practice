@@ -54,9 +54,15 @@ public class C2paApiAdapter {
      * @param title    画像のタイトル
      * @param image    署名対象の画像データ
      * @param fileName ファイル名
+     * @param aiInference AI推論の制限
+     * @param aiInferenceConstraintsInfo AI推論の制限詳細
+     * @param aiGenerativeTraining AI生成学習の制限
+     * @param aiGenerativeTrainingConstraintsInfo AI生成学習の制限詳細
      * @return 署名済み画像のバイト配列
      */
-    public byte[] sign(String title, byte[] image, String fileName) {
+    public byte[] sign(String title, byte[] image, String fileName,
+                       String aiInference, String aiInferenceConstraintsInfo,
+                       String aiGenerativeTraining, String aiGenerativeTrainingConstraintsInfo) {
         MultiValueMap<String, Object> parts = new LinkedMultiValueMap<>();
         parts.add("title", title);
         parts.add("image", new ByteArrayResource(image) {
@@ -65,6 +71,18 @@ public class C2paApiAdapter {
                 return fileName;
             }
         });
+        if (aiInference != null) {
+            parts.add("ai_inference", aiInference);
+        }
+        if (aiInferenceConstraintsInfo != null) {
+            parts.add("ai_inference_constraints_info", aiInferenceConstraintsInfo);
+        }
+        if (aiGenerativeTraining != null) {
+            parts.add("ai_generative_training", aiGenerativeTraining);
+        }
+        if (aiGenerativeTrainingConstraintsInfo != null) {
+            parts.add("ai_generative_training_constraints_info", aiGenerativeTrainingConstraintsInfo);
+        }
 
         return c2paRestClient.post()
                 .uri("/sign")
